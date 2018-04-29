@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html lang=es>
+	<head>
+		<script src='brochas.js'></script>
+		<script src="Pintor.js" type="text/JavaScript"></script>
+
+		<style>
+			#Brochas canvas {
+				border: 1px black solid;
+			}
+
+			.b_color {
+				width: 20px;
+				heigth: 16px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="Pintar"></div>
+		<div id="panel" style='border:1px black solid; width:230px;'>
+			<div id="colores" title='Colores' style='border:1px black solid;'>
+				<input type='button' title='Blanco' id='white' class='b_color' style='background:white;' />
+				<input type='button' title='Negro' id='black' class='b_color' style='background:black;' />
+				<input type='button' title='Rojo' id='red' class='b_color' style='background:red;' />
+				<input type='button' title='Azul' id="blue" class='b_color' style='background:blue;' />
+				<input type='button' title='Verde' id="green" class='b_color' style='background:green;' />
+				<input type='button' title='Yellow' id="yellow" class='b_color' style='background:yellow;' />
+				<input type='button' title='Cafe' id="brown" class='b_color' style='background:brown;' />
+				<input type='button' title='Morado' id="purple" class='b_color' style='background:purple;' />
+				<input type='button' title='Colores Aleatorios' id="azar" class='b_color' style='background:azar;' />
+			</div>
+			<div id="Brochas" title='Brochas' style='border:1px black solid;'>
+				<canvas title='Normal' id="normal" width=30 height=30></canvas>
+				<canvas title='Circulos' id="circulo" width=30 height=30></canvas>
+				<canvas title='Retangulos' id="rect" width=30 height=30></canvas>
+			</div>
+			<div id="Herramientas" title='Herramientas' style='border:1px black solid;'>
+				<input type='button' title='Borrar' value='Borrar' id="del" />
+				<input type='range' title='Tamaño' value=10 id="tam" name="tam" min=1 max=100 step=1 />
+				<input type='number' title='Tamaño' value=10 id="DatoTam" name="DatoTam" min=1 max=100 size=1 />
+			</div>
+		</div>
+	</body>
+</html>
