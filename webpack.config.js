@@ -1,7 +1,7 @@
-import path from 'path';
-import webpack from 'webpack';
+const path = require('path');
+const webpack = require('webpack');
 
-const config: webpack.Configuration = {
+const config = {
     mode: process.env.NODE_ENV,
     entry: './src/index.js',
     output: {
@@ -10,4 +10,4 @@ const config: webpack.Configuration = {
     }
 };
 
-export default config;
+module.exports = config;
