@@ -10,11 +10,20 @@
   "devDependencies": {
     "@types/node": "^8.10.11",
     "@types/webpack": "^4.1.4",
+    "cross-env": "^5.1.4",
     "ts-node": "^6.0.2",
-    "typescript": "^2.8.3"
+    "typescript": "^2.8.3",
+    "webpack-cli": "^2.1.2"
   },
   "scripts": {
-    "test": "test"
+    "pretest": "tsc",
+    "prepare": "tsc",
+    "test": "nyc mocha dist/tests/*-test.js",
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development webpack --progress --hide-modules --config=webpack.config.js",
+    "watch": "cross-env NODE_ENV=development webpack --watch --progress --hide-modules --config=webpack.config.js",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production webpack --progress --hide-modules --config=webpack.config.js"
   },
   "repository": {
     "type": "git",
