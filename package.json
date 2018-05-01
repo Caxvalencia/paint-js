@@ -1,0 +1,33 @@
+{
+  "name": "paint-js",
+  "version": "1.0.0",
+  "description": "Paint with JS",
+  "main": "index.js",
+  "dependencies": {
+    "ts-node": "^6.0.2",
+    "typescript": "^2.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^8.10.11",
+    "@types/webpack": "^4.1.4",
+    "ts-node": "^6.0.2",
+    "typescript": "^2.8.3"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Caxvalencia/paint-js.git"
+  },
+  "keywords": [
+    "paint",
+    "js"
+  ],
+  "author": "caxvalencia@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Caxvalencia/paint-js/issues"
+  },
+  "homepage": "https://github.com/Caxvalencia/paint-js#readme"
+}
