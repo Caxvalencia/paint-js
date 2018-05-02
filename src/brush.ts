@@ -1,7 +1,7 @@
 import { Circle } from './brushes/circle.brush';
 import { Erase } from './brushes/erase.brush';
-import { Rect } from './brushes/rect.brush';
 import { Line } from './brushes/line.brush';
+import { Rect } from './brushes/rect.brush';
 
 export class Brush {
     rects: any;
@@ -14,5 +14,9 @@ export class Brush {
         this.borrador = Erase.prototype;
         this.rects = Rect.prototype;
         this.lineas = Line.prototype;
+    }
+
+    static Line(x, y, x2, y2, color, a, ctx) {
+        return new Line(x, y, x2, y2, color, a, ctx);
     }
 }

@@ -2,21 +2,75 @@ import { Brush } from './brush';
 
 declare let document;
 
-let canvasDiv = document.getElementById('Pintar');
-let canvas = document.createElement('canvas');
-canvas.setAttribute('width', 800);
-canvas.setAttribute('height', 400);
-canvasDiv.appendChild(canvas);
+export class Paint {
+    ctx: any;
 
-let ctx = canvas.getContext('2d');
+    constructor() {
+        this.configCanvas();
+    }
 
-canvas.style.border = '1px black solid';
-canvas.style.cursor = 'pointer';
+    configCanvas() {
+        let canvasDiv = document.getElementById('Pintar');
+        let canvas = document.createElement('canvas');
+        canvas.setAttribute('width', 800);
+        canvas.setAttribute('height', 400);
+        canvasDiv.appendChild(canvas);
+
+        this.ctx = canvas.getContext('2d');
+
+        canvas.style.border = '1px black solid';
+        canvas.style.cursor = 'pointer';
+
+        this.addEventsToCanvas(canvas);
+    }
+
+    addEventsToCanvas(canvas) {
+        canvas.onmousedown = function(e) {
+            const x = e.pageX - this.offsetLeft;
+            const y = e.pageY - this.offsetTop;
+
+            procesar(x, y, 1);
+        };
+
+        canvas.onmousemove = function(e) {
+            if (E == 1) {
+                const x = e.pageX - this.offsetLeft;
+                const y = e.pageY - this.offsetTop;
+
+                procesar(x, y, 1, true);
+            }
+        };
+
+        canvas.onmouseup = function() {
+            E = 0;
+        };
+
+        document.getElementById('del').addEventListener('click', () => {
+            this.limpiar(canvas);
+        });
+    }
+
+    limpiar(canvas) {
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i <= DatoX.length; i++) {
+            delete DatoX[i];
+            delete DatoY[i];
+            delete DatoM[i];
+            delete DatoC[i];
+            delete E[i];
+        }
+    }
+}
+
+let paint = new Paint();
+let ctx = paint.ctx;
 
 let DatoX = []; /*Posicion en X*/
 let DatoY = []; /*Posicion en Y*/
 let DatoM = []; /*Saber si el mouse se mueve*/
-let DatoB = []; /*Contenedor de Brush*/
+let brushType = []; /*Contenedor de Brush*/
 let DatoC = []; /*Contenedor de colores*/
 let DatoT = []; /*Contenedor de tamaños*/
 let E; /*Estado = Controlar cuando dibujar*/
@@ -26,29 +80,6 @@ let brocha = 'normal';
 let color = 'black';
 let CAzar;
 
-/*Brochas*/
-let normal = new Brush();
-let circulo = new Brush();
-let rect = new Brush();
-
-//===============================================================================================
-canvas.onmousedown = function(e) {
-    const x = e.pageX - this.offsetLeft;
-    const y = e.pageY - this.offsetTop;
-
-    procesar(x, y, 1);
-};
-canvas.onmousemove = function(e) {
-    if (E == 1) {
-        const x = e.pageX - this.offsetLeft;
-        const y = e.pageY - this.offsetTop;
-
-        procesar(x, y, 1, true);
-    }
-};
-canvas.onmouseup = function() {
-    E = 0;
-};
 /*Eventos para los Colores*/
 document.getElementById('white').addEventListener('click', event => {
     addColor(event.target.id);
@@ -100,9 +131,6 @@ DatoTam.addEventListener('click', function(event) {
     addS_b(event.target.value);
 });
 
-document.getElementById('del').addEventListener('click', function() {
-    limpiar();
-});
 //==============================================================================================
 
 function addColor(clickColor) {
@@ -123,19 +151,6 @@ function addS_b(clickS) {
     tam.value = DatoTam.value;
 }
 
-function limpiar() {
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    for (let i = 0; i <= DatoX.length; i++) {
-        delete DatoX[i];
-        delete DatoY[i];
-        delete DatoM[i];
-        delete DatoC[i];
-        delete E[i];
-    }
-}
-
 function ColorAzar() {
     const r = Math.round(Math.random() * 255);
     const g = Math.round(Math.random() * 255);
@@ -154,7 +169,7 @@ function procesar(x, y, e, moviendo?) {
     DatoY.push(y);
     DatoM.push(moviendo);
     DatoC.push(color);
-    DatoB.push(brocha);
+    brushType.push(brocha);
     DatoT.push(size);
     E = e;
     E == 1 ? dibujar() : null;
@@ -162,10 +177,10 @@ function procesar(x, y, e, moviendo?) {
 
 function dibujar() {
     for (let i = 1; i <= DatoX.length; i++) {
-        switch (DatoB[i]) {
+        switch (brushType[i]) {
             case 'normal':
-                if (DatoM[i] && i)
-                    normal.lineas(
+                if (DatoM[i] && i) {
+                    Brush.Line(
                         DatoX[i - 1],
                         DatoY[i - 1],
                         DatoX[i],
@@ -174,8 +189,8 @@ function dibujar() {
                         DatoT[i],
                         ctx
                     );
-                else
-                    normal.lineas(
+                } else {
+                    Brush.Line(
                         DatoX[i] - 1,
                         DatoY[i],
                         DatoX[i],
@@ -184,55 +199,56 @@ function dibujar() {
                         DatoT[i],
                         ctx
                     );
+                }
 
                 break;
 
-            case 'circulo':
-                if (DatoM[i] && i)
-                    circulo.circulos(
-                        DatoX[i - 1],
-                        DatoY[i - 1],
-                        2,
-                        DatoT[i],
-                        false,
-                        DatoC[i],
-                        DatoC[i],
-                        ctx
-                    );
-                else
-                    circulo.circulos(
-                        DatoX[i],
-                        DatoY[i],
-                        2,
-                        DatoT[i],
-                        false,
-                        DatoC[i],
-                        DatoC[i],
-                        ctx
-                    );
-                break;
-            case 'rect':
-                if (DatoM[i] && i)
-                    rect.rects(
-                        DatoX[i - 1],
-                        DatoY[i - 1],
-                        DatoX[i],
-                        DatoY[i],
-                        DatoC[i],
-                        2,
-                        ctx
-                    );
-                else
-                    rect.rects(
-                        DatoX[i] - 1,
-                        DatoY[i],
-                        DatoX[i],
-                        DatoY[i],
-                        DatoC[i],
-                        2,
-                        ctx
-                    );
-                break;
+            // case 'circulo':
+            //     if (DatoM[i] && i)
+            //         Brush.circle(
+            //             DatoX[i - 1],
+            //             DatoY[i - 1],
+            //             2,
+            //             DatoT[i],
+            //             false,
+            //             DatoC[i],
+            //             DatoC[i],
+            //             ctx
+            //         );
+            //     else
+            //         circulo.circulos(
+            //             DatoX[i],
+            //             DatoY[i],
+            //             2,
+            //             DatoT[i],
+            //             false,
+            //             DatoC[i],
+            //             DatoC[i],
+            //             ctx
+            //         );
+            //     break;
+            // case 'rect':
+            // if (DatoM[i] && i)
+            //     rect.rects(
+            //         DatoX[i - 1],
+            //         DatoY[i - 1],
+            //         DatoX[i],
+            //         DatoY[i],
+            //         DatoC[i],
+            //         2,
+            //         ctx
+            //     );
+            // else
+            //     rect.rects(
+            //         DatoX[i] - 1,
+            //         DatoY[i],
+            //         DatoX[i],
+            //         DatoY[i],
+            //         DatoC[i],
+            //         2,
+            //         ctx
+            //     );
+            // break;
         }
     }
 }

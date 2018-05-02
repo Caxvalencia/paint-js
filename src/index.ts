@@ -1,5 +1,5 @@
-import { Brush } from './brush';
+import { Paint } from './paint';
 
 export default {
-    Brush
+    Paint
 };
