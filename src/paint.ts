@@ -1,3 +1,7 @@
+import { Brush } from './brush';
+
+declare let document;
+
 let canvasDiv = document.getElementById('Pintar');
 let canvas = document.createElement('canvas');
 canvas.setAttribute('width', 800);
@@ -12,7 +16,7 @@ canvas.style.cursor = 'pointer';
 let DatoX = []; /*Posicion en X*/
 let DatoY = []; /*Posicion en Y*/
 let DatoM = []; /*Saber si el mouse se mueve*/
-let DatoB = []; /*Contenedor de brochas*/
+let DatoB = []; /*Contenedor de Brush*/
 let DatoC = []; /*Contenedor de colores*/
 let DatoT = []; /*Contenedor de tamaños*/
 let E; /*Estado = Controlar cuando dibujar*/
@@ -23,9 +27,9 @@ let color = 'black';
 let CAzar;
 
 /*Brochas*/
-let normal = new brochas();
-let circulo = new brochas();
-let rect = new brochas();
+let normal = new Brush();
+let circulo = new Brush();
+let rect = new Brush();
 
 //===============================================================================================
 canvas.onmousedown = function(e) {
@@ -42,68 +46,78 @@ canvas.onmousemove = function(e) {
         procesar(x, y, 1, true);
     }
 };
-canvas.onmouseup = function(e) {
+canvas.onmouseup = function() {
     E = 0;
 };
 /*Eventos para los Colores*/
-document.getElementById('white').addEventListener('click', function(id) {
-    addColor(this.id);
+document.getElementById('white').addEventListener('click', event => {
+    addColor(event.target.id);
 });
-document.getElementById('black').addEventListener('click', function(id) {
-    addColor(this.id);
+document.getElementById('black').addEventListener('click', function(event) {
+    addColor(event.target.id);
 });
-document.getElementById('red').addEventListener('click', function(id) {
-    addColor(this.id);
+document.getElementById('red').addEventListener('click', function(event) {
+    addColor(event.target.id);
 });
-document.getElementById('blue').addEventListener('click', function(id) {
-    addColor(this.id);
+document.getElementById('blue').addEventListener('click', function(event) {
+    addColor(event.target.id);
 });
-document.getElementById('green').addEventListener('click', function(id) {
-    addColor(this.id);
+document.getElementById('green').addEventListener('click', function(event) {
+    addColor(event.target.id);
 });
-document.getElementById('yellow').addEventListener('click', function(id) {
-    addColor(this.id);
+document.getElementById('yellow').addEventListener('click', function(event) {
+    addColor(event.target.id);
 });
-document.getElementById('brown').addEventListener('click', function(id) {
-    addColor(this.id);
+document.getElementById('brown').addEventListener('click', function(event) {
+    addColor(event.target.id);
 });
-document.getElementById('purple').addEventListener('click', function(id) {
-    addColor(this.id);
+document.getElementById('purple').addEventListener('click', function(event) {
+    addColor(event.target.id);
 });
-document.getElementById('azar').addEventListener('click', function(id) {
+document.getElementById('azar').addEventListener('click', function() {
     CAzar = 'azar';
 });
 /*Eventos Brochas*/
-document.getElementById('normal').addEventListener('click', function(id) {
-    addBrocha(this.id);
+document.getElementById('normal').addEventListener('click', function(event) {
+    addBrocha(event.target.id);
 });
-document.getElementById('circulo').addEventListener('click', function(id) {
-    addBrocha(this.id);
+document.getElementById('circulo').addEventListener('click', function(event) {
+    addBrocha(event.target.id);
 });
-document.getElementById('rect').addEventListener('click', function(id) {
-    addBrocha(this.id);
+document.getElementById('rect').addEventListener('click', function(event) {
+    addBrocha(event.target.id);
 });
 /*Eventos de Herramientas*/
-document.getElementById('tam').addEventListener('mousemove', function(e) {
-    addS_a(this.value);
+let tam = document.getElementById('tam');
+
+tam.addEventListener('mousemove', function(event) {
+    addS_a(event.target.value);
 });
-document.getElementById('DatoTam').addEventListener('click', function(e) {
-    addS_b(this.value);
+
+let DatoTam = document.getElementById('DatoTam');
+
+DatoTam.addEventListener('click', function(event) {
+    addS_b(event.target.value);
 });
+
 document.getElementById('del').addEventListener('click', function() {
     limpiar();
 });
 //==============================================================================================
+
 function addColor(clickColor) {
     color = clickColor;
 }
+
 function addBrocha(clickBrocha) {
     brocha = clickBrocha;
 }
+
 function addS_a(clickS) {
     size = clickS;
     DatoTam.value = tam.value;
 }
+
 function addS_b(clickS) {
     size = clickS;
     tam.value = DatoTam.value;
@@ -131,7 +145,7 @@ function ColorAzar() {
     color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
 }
 
-function procesar(x, y, e, moviendo) {
+function procesar(x, y, e, moviendo?) {
     if (CAzar == 'azar') {
         ColorAzar();
     }
@@ -172,6 +186,7 @@ function dibujar() {
                     );
 
                 break;
+
             case 'circulo':
                 if (DatoM[i] && i)
                     circulo.circulos(
