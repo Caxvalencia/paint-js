@@ -25,18 +25,18 @@ export class Paint {
 
     process(x, y, isMouseUp, moviendo?) {
         if (CAzar == 'azar') {
-            ColorAzar();
+            randomColor();
         }
 
-        DatoX.push(x);
-        DatoY.push(y);
+        dataX.push(x);
+        dataY.push(y);
         DatoM.push(moviendo);
-        DatoC.push(color);
-        brushType.push(brocha);
-        DatoT.push(size);
+        DatoC.push(brush.color);
+        brushType.push(brush.type);
+        DatoT.push(brush.size);
 
         if (!isMouseUp) {
-            dibujar();
+            draw();
         }
     }
 
@@ -80,9 +80,9 @@ export class Paint {
         this.ctx.fillStyle = '#ffffff';
         this.ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = 0; i <= DatoX.length; i++) {
-            delete DatoX[i];
-            delete DatoY[i];
+        for (let i = 0; i <= dataX.length; i++) {
+            delete dataX[i];
+            delete dataY[i];
             delete DatoM[i];
             delete DatoC[i];
         }
@@ -90,18 +90,16 @@ export class Paint {
 }
 
 let paint = new Paint();
+let brush = new Brush();
 let ctx = paint.ctx;
 
-let DatoX = []; /*Posicion en X*/
-let DatoY = []; /*Posicion en Y*/
+let dataX = []; /*Posicion en X*/
+let dataY = []; /*Posicion en Y*/
 let DatoM = []; /*Saber si el mouse se mueve*/
 let brushType = []; /*Contenedor de Brush*/
 let DatoC = []; /*Contenedor de colores*/
 let DatoT = []; /*Contenedor de tamaños*/
 
-let size = 10;
-let brocha = 'normal';
-let color = 'black';
 let CAzar;
 
 /*Eventos para los Colores*/
@@ -152,52 +150,52 @@ DatoTam.addEventListener('click', function(event) {
 //==============================================================================================
 
 function addColor(clickColor) {
-    color = clickColor;
+    brush.color = clickColor;
 }
 
 function addBrocha(clickBrocha) {
-    brocha = clickBrocha;
+    brush.type = clickBrocha;
 }
 
 function addS_a(clickS) {
-    size = clickS;
+    brush.size = clickS;
     DatoTam.setAttribute('value', tam.getAttribute('value'));
 }
 
 function addS_b(clickS) {
-    size = clickS;
+    brush.size = clickS;
     tam.setAttribute('value', DatoTam.getAttribute('value'));
 }
 
-function ColorAzar() {
+function randomColor() {
     const r = Math.round(Math.random() * 255);
     const g = Math.round(Math.random() * 255);
     const b = Math.round(Math.random() * 255);
     const alpha = Math.round(Math.random() * 100) / 100;
 
-    color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    brush.color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
 }
 
-function dibujar() {
-    for (let i = 1; i <= DatoX.length; i++) {
+function draw() {
+    for (let i = 1; i <= dataX.length; i++) {
         switch (brushType[i]) {
             case 'normal':
                 if (DatoM[i] && i) {
                     Brush.Line(
-                        DatoX[i - 1],
-                        DatoY[i - 1],
-                        DatoX[i],
-                        DatoY[i],
+                        dataX[i - 1],
+                        dataY[i - 1],
+                        dataX[i],
+                        dataY[i],
                         DatoC[i],
                         DatoT[i],
                         ctx
                     );
                 } else {
                     Brush.Line(
-                        DatoX[i] - 1,
-                        DatoY[i],
-                        DatoX[i],
-                        DatoY[i],
+                        dataX[i] - 1,
+                        dataY[i],
+                        dataX[i],
+                        dataY[i],
                         DatoC[i],
                         DatoT[i],
                         ctx

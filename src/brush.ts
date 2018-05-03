@@ -1,19 +1,14 @@
-import { Circle } from './brushes/circle.brush';
-import { Erase } from './brushes/erase.brush';
 import { Line } from './brushes/line.brush';
-import { Rect } from './brushes/rect.brush';
 
 export class Brush {
-    rects: any;
-    lineas: any;
-    circulos: any;
-    borrador: any;
+    size: number;
+    type: string;
+    color: string;
 
-    constructor() {
-        this.circulos = Circle.prototype;
-        this.borrador = Erase.prototype;
-        this.rects = Rect.prototype;
-        this.lineas = Line.prototype;
+    constructor(type = 'normal', size = 10, color = 'black') {
+        this.type = type;
+        this.size = size;
+        this.color = color;
     }
 
     static Line(x, y, x2, y2, color, a, ctx) {
