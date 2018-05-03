@@ -7,6 +7,22 @@ export class Paint {
 
     constructor() {
         this.configCanvas();
+        this.sizeConfiguration();
+    }
+
+    sizeConfiguration() {
+        let sizeRange = <HTMLInputElement>document.getElementById('tam');
+        let sizeInput = <HTMLDataElement>document.getElementById('DatoTam');
+
+        sizeRange.addEventListener('change', (event: any) => {
+            brush.size = event.target.value;
+            sizeInput.value = sizeRange.value;
+        });
+
+        sizeInput.addEventListener('click', (event: any) => {
+            brush.size = event.target.value;
+            sizeRange.value = sizeInput.value;
+        });
     }
 
     configCanvas() {
@@ -23,14 +39,14 @@ export class Paint {
         this.addEventsToCanvas(canvas);
     }
 
-    process(x, y, isMouseUp, moviendo?) {
+    process(x, y, isMouseUp, isMoving?) {
         if (CAzar == 'azar') {
             randomColor();
         }
 
         dataX.push(x);
         dataY.push(y);
-        DatoM.push(moviendo);
+        DatoM.push(isMoving);
         DatoC.push(brush.color);
         brushType.push(brush.type);
         DatoT.push(brush.size);
@@ -134,20 +150,6 @@ document.getElementById('azar').addEventListener('click', function() {
 document.getElementById('normal').addEventListener('click', function(event) {
     addBrocha(event.srcElement.id);
 });
-/*Eventos de Herramientas*/
-let tam = document.getElementById('tam');
-
-tam.addEventListener('mousemove', function(event) {
-    addS_a(event.srcElement.getAttribute('value'));
-});
-
-let DatoTam = document.getElementById('DatoTam');
-
-DatoTam.addEventListener('click', function(event) {
-    addS_b(event.srcElement.getAttribute('value'));
-});
-
-//==============================================================================================
 
 function addColor(clickColor) {
     brush.color = clickColor;
@@ -155,16 +157,6 @@ function addColor(clickColor) {
 
 function addBrocha(clickBrocha) {
     brush.type = clickBrocha;
-}
-
-function addS_a(clickS) {
-    brush.size = clickS;
-    DatoTam.setAttribute('value', tam.getAttribute('value'));
-}
-
-function addS_b(clickS) {
-    brush.size = clickS;
-    tam.setAttribute('value', DatoTam.getAttribute('value'));
 }
 
 function randomColor() {
