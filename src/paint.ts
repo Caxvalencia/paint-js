@@ -1,48 +1,74 @@
 import { Brush } from './brush';
 
-declare let document;
+declare let document: Document;
 
 export class Paint {
-    ctx: any;
+    ctx: CanvasRenderingContext2D;
 
     constructor() {
         this.configCanvas();
     }
 
     configCanvas() {
-        let canvasDiv = document.getElementById('Pintar');
         let canvas = document.createElement('canvas');
-        canvas.setAttribute('width', 800);
-        canvas.setAttribute('height', 400);
-        canvasDiv.appendChild(canvas);
-
-        this.ctx = canvas.getContext('2d');
-
+        canvas.width = 800;
+        canvas.height = 400;
         canvas.style.border = '1px black solid';
         canvas.style.cursor = 'pointer';
+
+        document.getElementById('Pintar').appendChild(canvas);
+
+        this.ctx = canvas.getContext('2d');
 
         this.addEventsToCanvas(canvas);
     }
 
-    addEventsToCanvas(canvas) {
-        canvas.onmousedown = function(e) {
-            const x = e.pageX - this.offsetLeft;
-            const y = e.pageY - this.offsetTop;
+    process(x, y, isMouseUp, moviendo?) {
+        if (CAzar == 'azar') {
+            ColorAzar();
+        }
 
-            procesar(x, y, 1);
+        DatoX.push(x);
+        DatoY.push(y);
+        DatoM.push(moviendo);
+        DatoC.push(color);
+        brushType.push(brocha);
+        DatoT.push(size);
+
+        if (!isMouseUp) {
+            dibujar();
+        }
+    }
+
+    addEventsToCanvas(canvas: HTMLCanvasElement) {
+        let isMouseUp = true;
+
+        let offset = {
+            left: canvas.offsetLeft,
+            top: canvas.offsetTop
         };
 
-        canvas.onmousemove = function(e) {
-            if (E == 1) {
-                const x = e.pageX - this.offsetLeft;
-                const y = e.pageY - this.offsetTop;
+        canvas.onmousedown = event => {
+            const x = event.pageX - offset.left;
+            const y = event.pageY - offset.top;
+            isMouseUp = false;
 
-                procesar(x, y, 1, true);
+            this.process(x, y, isMouseUp);
+        };
+
+        canvas.onmousemove = event => {
+            if (isMouseUp) {
+                return;
             }
+
+            const x = event.pageX - offset.left;
+            const y = event.pageY - offset.top;
+
+            this.process(x, y, isMouseUp, true);
         };
 
         canvas.onmouseup = function() {
-            E = 0;
+            isMouseUp = true;
         };
 
         document.getElementById('del').addEventListener('click', () => {
@@ -59,7 +85,6 @@ export class Paint {
             delete DatoY[i];
             delete DatoM[i];
             delete DatoC[i];
-            delete E[i];
         }
     }
 }
@@ -73,7 +98,6 @@ let DatoM = []; /*Saber si el mouse se mueve*/
 let brushType = []; /*Contenedor de Brush*/
 let DatoC = []; /*Contenedor de colores*/
 let DatoT = []; /*Contenedor de tamaños*/
-let E; /*Estado = Controlar cuando dibujar*/
 
 let size = 10;
 let brocha = 'normal';
@@ -82,53 +106,47 @@ let CAzar;
 
 /*Eventos para los Colores*/
 document.getElementById('white').addEventListener('click', event => {
-    addColor(event.target.id);
+    addColor(event.srcElement.id);
 });
 document.getElementById('black').addEventListener('click', function(event) {
-    addColor(event.target.id);
+    addColor(event.srcElement.id);
 });
 document.getElementById('red').addEventListener('click', function(event) {
-    addColor(event.target.id);
+    addColor(event.srcElement.id);
 });
 document.getElementById('blue').addEventListener('click', function(event) {
-    addColor(event.target.id);
+    addColor(event.srcElement.id);
 });
 document.getElementById('green').addEventListener('click', function(event) {
-    addColor(event.target.id);
+    addColor(event.srcElement.id);
 });
 document.getElementById('yellow').addEventListener('click', function(event) {
-    addColor(event.target.id);
+    addColor(event.srcElement.id);
 });
 document.getElementById('brown').addEventListener('click', function(event) {
-    addColor(event.target.id);
+    addColor(event.srcElement.id);
 });
 document.getElementById('purple').addEventListener('click', function(event) {
-    addColor(event.target.id);
+    addColor(event.srcElement.id);
 });
 document.getElementById('azar').addEventListener('click', function() {
     CAzar = 'azar';
 });
 /*Eventos Brochas*/
 document.getElementById('normal').addEventListener('click', function(event) {
-    addBrocha(event.target.id);
-});
-document.getElementById('circulo').addEventListener('click', function(event) {
-    addBrocha(event.target.id);
-});
-document.getElementById('rect').addEventListener('click', function(event) {
-    addBrocha(event.target.id);
+    addBrocha(event.srcElement.id);
 });
 /*Eventos de Herramientas*/
 let tam = document.getElementById('tam');
 
 tam.addEventListener('mousemove', function(event) {
-    addS_a(event.target.value);
+    addS_a(event.srcElement.getAttribute('value'));
 });
 
 let DatoTam = document.getElementById('DatoTam');
 
 DatoTam.addEventListener('click', function(event) {
-    addS_b(event.target.value);
+    addS_b(event.srcElement.getAttribute('value'));
 });
 
 //==============================================================================================
@@ -143,12 +161,12 @@ function addBrocha(clickBrocha) {
 
 function addS_a(clickS) {
     size = clickS;
-    DatoTam.value = tam.value;
+    DatoTam.setAttribute('value', tam.getAttribute('value'));
 }
 
 function addS_b(clickS) {
     size = clickS;
-    tam.value = DatoTam.value;
+    tam.setAttribute('value', DatoTam.getAttribute('value'));
 }
 
 function ColorAzar() {
@@ -158,21 +176,6 @@ function ColorAzar() {
     const alpha = Math.round(Math.random() * 100) / 100;
 
     color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
-}
-
-function procesar(x, y, e, moviendo?) {
-    if (CAzar == 'azar') {
-        ColorAzar();
-    }
-
-    DatoX.push(x);
-    DatoY.push(y);
-    DatoM.push(moviendo);
-    DatoC.push(color);
-    brushType.push(brocha);
-    DatoT.push(size);
-    E = e;
-    E == 1 ? dibujar() : null;
 }
 
 function dibujar() {
@@ -202,53 +205,6 @@ function dibujar() {
                 }
 
                 break;
-
-            // case 'circulo':
-            //     if (DatoM[i] && i)
-            //         Brush.circle(
-            //             DatoX[i - 1],
-            //             DatoY[i - 1],
-            //             2,
-            //             DatoT[i],
-            //             false,
-            //             DatoC[i],
-            //             DatoC[i],
-            //             ctx
-            //         );
-            //     else
-            //         circulo.circulos(
-            //             DatoX[i],
-            //             DatoY[i],
-            //             2,
-            //             DatoT[i],
-            //             false,
-            //             DatoC[i],
-            //             DatoC[i],
-            //             ctx
-            //         );
-            //     break;
-            // case 'rect':
-            // if (DatoM[i] && i)
-            //     rect.rects(
-            //         DatoX[i - 1],
-            //         DatoY[i - 1],
-            //         DatoX[i],
-            //         DatoY[i],
-            //         DatoC[i],
-            //         2,
-            //         ctx
-            //     );
-            // else
-            //     rect.rects(
-            //         DatoX[i] - 1,
-            //         DatoY[i],
-            //         DatoX[i],
-            //         DatoY[i],
-            //         DatoC[i],
-            //         2,
-            //         ctx
-            //     );
-            // break;
         }
     }
 }
@@ -273,24 +229,3 @@ function dibujar() {
 				}
 			}
 	*/
-const N = document.getElementById('normal').getContext('2d');
-const C = document.getElementById('circulo').getContext('2d');
-const R = document.getElementById('rect').getContext('2d');
-
-N.beginPath();
-N.lineWidth = 5;
-//N.strokeStyle = DatoC[i];
-N.lineJoin = 'round';
-N.moveTo(10, 10);
-N.lineTo(20, 20);
-N.closePath();
-N.stroke();
-
-C.lineWidth = 5;
-//C.strokeStyle = ;
-C.arc(15, 15, 10, 0, 180, true);
-C.stroke();
-
-//R.strokeStyle =;
-R.lineWidth = 5;
-R.strokeRect(5, 5, 20, 20);
