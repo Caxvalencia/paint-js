@@ -39,8 +39,8 @@ export class Paint {
         this.addEventsToCanvas(canvas);
     }
 
-    process(x, y, isMouseUp, isMoving?) {
-        if (CAzar == 'azar') {
+    process(x, y, mouseupTriggered, isMoving?) {
+        if (isRandomColor) {
             randomColor();
         }
 
@@ -51,13 +51,13 @@ export class Paint {
         brushType.push(brush.type);
         stackSize.push(brush.size);
 
-        if (!isMouseUp) {
+        if (!mouseupTriggered) {
             draw();
         }
     }
 
     addEventsToCanvas(canvas: HTMLCanvasElement) {
-        let isMouseUp = true;
+        let mouseupTriggered = true;
 
         let offset = {
             left: canvas.offsetLeft,
@@ -67,24 +67,24 @@ export class Paint {
         canvas.onmousedown = event => {
             const x = event.pageX - offset.left;
             const y = event.pageY - offset.top;
-            isMouseUp = false;
+            mouseupTriggered = false;
 
-            this.process(x, y, isMouseUp);
+            this.process(x, y, mouseupTriggered);
         };
 
         canvas.onmousemove = event => {
-            if (isMouseUp) {
+            if (mouseupTriggered) {
                 return;
             }
 
             const x = event.pageX - offset.left;
             const y = event.pageY - offset.top;
 
-            this.process(x, y, isMouseUp, true);
+            this.process(x, y, mouseupTriggered, true);
         };
 
         canvas.onmouseup = function() {
-            isMouseUp = true;
+            mouseupTriggered = true;
         };
 
         document.getElementById('del').addEventListener('click', () => {
@@ -116,48 +116,24 @@ let brushType = []; /*Contenedor de Brush*/
 let DatoC = []; /*Contenedor de colores*/
 let stackSize = []; /*Contenedor de tamaños*/
 
-let CAzar;
+let isRandomColor;
 
-/*Eventos para los Colores*/
-document.getElementById('white').addEventListener('click', event => {
-    addColor(event.srcElement.id);
-});
-document.getElementById('black').addEventListener('click', function(event) {
-    addColor(event.srcElement.id);
-});
-document.getElementById('red').addEventListener('click', function(event) {
-    addColor(event.srcElement.id);
-});
-document.getElementById('blue').addEventListener('click', function(event) {
-    addColor(event.srcElement.id);
-});
-document.getElementById('green').addEventListener('click', function(event) {
-    addColor(event.srcElement.id);
-});
-document.getElementById('yellow').addEventListener('click', function(event) {
-    addColor(event.srcElement.id);
-});
-document.getElementById('brown').addEventListener('click', function(event) {
-    addColor(event.srcElement.id);
-});
-document.getElementById('purple').addEventListener('click', function(event) {
-    addColor(event.srcElement.id);
-});
+['white', 'black', 'red', 'blue', 'green', 'yellow', 'brown', 'purple'].forEach(
+    color => {
+        document.getElementById(color).addEventListener('click', event => {
+            brush.color = event.srcElement.id;
+            isRandomColor = false;
+        });
+    }
+);
+
 document.getElementById('azar').addEventListener('click', function() {
-    CAzar = 'azar';
+    isRandomColor = true;
 });
-/*Eventos Brochas*/
+
 document.getElementById('normal').addEventListener('click', function(event) {
-    addBrocha(event.srcElement.id);
+    brush.type = event.srcElement.id;
 });
-
-function addColor(clickColor) {
-    brush.color = clickColor;
-}
-
-function addBrocha(clickBrocha) {
-    brush.type = clickBrocha;
-}
 
 function randomColor() {
     const r = Math.round(Math.random() * 255);
@@ -170,52 +146,28 @@ function randomColor() {
 
 function draw() {
     for (let i = 1; i <= dataX.length; i++) {
-        switch (brushType[i]) {
-            case 'normal':
-                if (DatoM[i] && i) {
-                    brush.line(
-                        dataX[i - 1],
-                        dataY[i - 1],
-                        dataX[i],
-                        dataY[i],
-                        DatoC[i],
-                        stackSize[i]
-                    );
+        // brushType[i]
 
-                    break;
-                }
+        if (DatoM[i]) {
+            brush.line(
+                dataX[i - 1],
+                dataY[i - 1],
+                dataX[i],
+                dataY[i],
+                DatoC[i],
+                stackSize[i]
+            );
 
-                brush.line(
-                    dataX[i] - 1,
-                    dataY[i],
-                    dataX[i],
-                    dataY[i],
-                    DatoC[i],
-                    stackSize[i]
-                );
-
-                break;
+            continue;
         }
+
+        brush.line(
+            dataX[i] - 1,
+            dataY[i],
+            dataX[i],
+            dataY[i],
+            DatoC[i],
+            stackSize[i]
+        );
     }
 }
-
-/*
-	function mover(DatoE) {
-				//const x = e.pageX - this.offsetLeft - centroX;
-
-				switch (brocha) {
-					case 1 :
-						b1.circulo(x,y,10,20,false,color,color,ctx);
-					break;
-					case 2 :
-						b2.borrador(x,y,50,'white',ctx);
-					break;
-					case 3 :
-						b3.rects(x,y,x,y,'black',5,ctx)
-					break;
-					case 4 :
-						b4.lineas(x,y,x2,y2,'black',5,ctx)
-					break;
-				}
-			}
-	*/

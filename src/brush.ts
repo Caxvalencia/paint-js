@@ -7,7 +7,7 @@ export class Brush {
 
     private _line: Line;
 
-    constructor(context, type = 'normal', size = 10, color = 'black') {
+    constructor(context, type = 'line', size = 10, color = 'black') {
         this.type = type;
         this.size = size;
         this.color = color;
