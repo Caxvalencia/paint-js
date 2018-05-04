@@ -2,12 +2,27 @@ import { Brush } from './brush';
 
 declare let document: Document;
 
+enum StorageIndex {
+    x,
+    y,
+    isMoving,
+    color,
+    type,
+    size
+}
+
+let storageStage = [];
+
 export class Paint {
+    brush: Brush;
     ctx: CanvasRenderingContext2D;
+    isRandomColor: boolean;
 
     constructor() {
         this.configCanvas();
         this.sizeConfiguration();
+
+        this.brush = new Brush(this.ctx);
     }
 
     sizeConfiguration() {
@@ -15,12 +30,12 @@ export class Paint {
         let sizeInput = <HTMLDataElement>document.getElementById('DatoTam');
 
         sizeRange.addEventListener('change', (event: any) => {
-            brush.size = event.target.value;
+            this.brush.size = event.target.value;
             sizeInput.value = sizeRange.value;
         });
 
         sizeInput.addEventListener('click', (event: any) => {
-            brush.size = event.target.value;
+            this.brush.size = event.target.value;
             sizeRange.value = sizeInput.value;
         });
     }
@@ -40,20 +55,26 @@ export class Paint {
     }
 
     process(x, y, mouseupTriggered, isMoving?) {
-        if (isRandomColor) {
-            randomColor();
+        if (this.isRandomColor) {
+            this.randomColor();
         }
 
-        dataX.push(x);
-        dataY.push(y);
-        DatoM.push(isMoving);
-        DatoC.push(brush.color);
-        brushType.push(brush.type);
-        stackSize.push(brush.size);
+        this.storeShot(x, y, isMoving);
 
         if (!mouseupTriggered) {
-            draw();
+            this.draw();
         }
+    }
+
+    storeShot(x: number, y: number, isMoving: boolean): any {
+        storageStage.push([
+            x,
+            y,
+            isMoving,
+            this.brush.color,
+            this.brush.type,
+            this.brush.size
+        ]);
     }
 
     addEventsToCanvas(canvas: HTMLCanvasElement) {
@@ -96,78 +117,73 @@ export class Paint {
         this.ctx.fillStyle = '#ffffff';
         this.ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = 0; i <= dataX.length; i++) {
-            delete dataX[i];
-            delete dataY[i];
-            delete DatoM[i];
-            delete DatoC[i];
+        storageStage = [];
+    }
+
+    randomColor() {
+        const r = Math.round(Math.random() * 255);
+        const g = Math.round(Math.random() * 255);
+        const b = Math.round(Math.random() * 255);
+        const alpha = Math.round(Math.random() * 100) / 100;
+
+        this.brush.color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    }
+
+    draw() {
+        for (let i = 1; i <= storageStage.length; i++) {
+            // brushType[i]
+            let storagedBefore = storageStage[i - 1];
+            let storaged = storageStage[i];
+
+            if (storaged[StorageIndex.isMoving]) {
+                this.brush.line(
+                    storagedBefore[StorageIndex.x],
+                    storagedBefore[StorageIndex.y],
+                    storaged[StorageIndex.x],
+                    storaged[StorageIndex.y],
+                    storaged[StorageIndex.color],
+                    storaged[StorageIndex.size]
+                );
+
+                continue;
+            }
+
+            this.brush.line(
+                storaged[StorageIndex.x] - 1,
+                storaged[StorageIndex.y],
+                storaged[StorageIndex.x],
+                storaged[StorageIndex.y],
+                storaged[StorageIndex.color],
+                storaged[StorageIndex.size]
+            );
         }
     }
-}
 
-let paint = new Paint();
-let ctx = paint.ctx;
-let brush = new Brush(ctx);
+    configureColors() {
+        [
+            'white',
+            'black',
+            'red',
+            'blue',
+            'green',
+            'yellow',
+            'brown',
+            'purple'
+        ].forEach(color => {
+            document.getElementById(color).addEventListener('click', event => {
+                this.brush.color = event.srcElement.id;
+                this.isRandomColor = false;
+            });
+        });
 
-let dataX = []; /*Posicion en X*/
-let dataY = []; /*Posicion en Y*/
-let DatoM = []; /*Saber si el mouse se mueve*/
-let brushType = []; /*Contenedor de Brush*/
-let DatoC = []; /*Contenedor de colores*/
-let stackSize = []; /*Contenedor de tamaños*/
+        document.getElementById('azar').addEventListener('click', () => {
+            this.isRandomColor = true;
+        });
 
-let isRandomColor;
-
-['white', 'black', 'red', 'blue', 'green', 'yellow', 'brown', 'purple'].forEach(
-    color => {
-        document.getElementById(color).addEventListener('click', event => {
-            brush.color = event.srcElement.id;
-            isRandomColor = false;
+        document.getElementById('normal').addEventListener('click', event => {
+            this.brush.type = event.srcElement.id;
         });
     }
-);
-
-document.getElementById('azar').addEventListener('click', function() {
-    isRandomColor = true;
-});
-
-document.getElementById('normal').addEventListener('click', function(event) {
-    brush.type = event.srcElement.id;
-});
-
-function randomColor() {
-    const r = Math.round(Math.random() * 255);
-    const g = Math.round(Math.random() * 255);
-    const b = Math.round(Math.random() * 255);
-    const alpha = Math.round(Math.random() * 100) / 100;
-
-    brush.color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
 }
 
-function draw() {
-    for (let i = 1; i <= dataX.length; i++) {
-        // brushType[i]
-
-        if (DatoM[i]) {
-            brush.line(
-                dataX[i - 1],
-                dataY[i - 1],
-                dataX[i],
-                dataY[i],
-                DatoC[i],
-                stackSize[i]
-            );
-
-            continue;
-        }
-
-        brush.line(
-            dataX[i] - 1,
-            dataY[i],
-            dataX[i],
-            dataY[i],
-            DatoC[i],
-            stackSize[i]
-        );
-    }
-}
+new Paint();
