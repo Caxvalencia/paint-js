@@ -5,13 +5,28 @@ export class Brush {
     type: string;
     color: string;
 
-    constructor(type = 'normal', size = 10, color = 'black') {
+    private _line: Line;
+
+    constructor(context, type = 'normal', size = 10, color = 'black') {
         this.type = type;
         this.size = size;
         this.color = color;
+        this._line = new Line(context);
     }
 
-    static Line(x, y, x2, y2, color, a, ctx) {
-        return new Line(x, y, x2, y2, color, a, ctx);
+    line(
+        x: number,
+        y: number,
+        x2: number,
+        y2: number,
+        color: string,
+        size: number
+    ) {
+        return this._line
+            .color(color)
+            .size(size)
+            .from(x, y)
+            .to(x2, y2)
+            .draw();
     }
 }

@@ -49,7 +49,7 @@ export class Paint {
         DatoM.push(isMoving);
         DatoC.push(brush.color);
         brushType.push(brush.type);
-        DatoT.push(brush.size);
+        stackSize.push(brush.size);
 
         if (!isMouseUp) {
             draw();
@@ -106,15 +106,15 @@ export class Paint {
 }
 
 let paint = new Paint();
-let brush = new Brush();
 let ctx = paint.ctx;
+let brush = new Brush(ctx);
 
 let dataX = []; /*Posicion en X*/
 let dataY = []; /*Posicion en Y*/
 let DatoM = []; /*Saber si el mouse se mueve*/
 let brushType = []; /*Contenedor de Brush*/
 let DatoC = []; /*Contenedor de colores*/
-let DatoT = []; /*Contenedor de tamaños*/
+let stackSize = []; /*Contenedor de tamaños*/
 
 let CAzar;
 
@@ -173,26 +173,26 @@ function draw() {
         switch (brushType[i]) {
             case 'normal':
                 if (DatoM[i] && i) {
-                    Brush.Line(
+                    brush.line(
                         dataX[i - 1],
                         dataY[i - 1],
                         dataX[i],
                         dataY[i],
                         DatoC[i],
-                        DatoT[i],
-                        ctx
+                        stackSize[i]
                     );
-                } else {
-                    Brush.Line(
-                        dataX[i] - 1,
-                        dataY[i],
-                        dataX[i],
-                        dataY[i],
-                        DatoC[i],
-                        DatoT[i],
-                        ctx
-                    );
+
+                    break;
                 }
+
+                brush.line(
+                    dataX[i] - 1,
+                    dataY[i],
+                    dataX[i],
+                    dataY[i],
+                    DatoC[i],
+                    stackSize[i]
+                );
 
                 break;
         }
