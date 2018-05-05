@@ -19,14 +19,14 @@ export class Paint {
     isRandomColor: boolean;
 
     constructor() {
-        this.configCanvas();
-        this.sizeConfiguration();
+        this.configureCanvas();
+        this.configureSize();
         this.configureColors();
 
         this.brush = new Brush(this.ctx);
     }
 
-    sizeConfiguration() {
+    configureSize() {
         let sizeRange = <HTMLInputElement>document.getElementById('tam');
         let sizeInput = <HTMLDataElement>document.getElementById('DatoTam');
 
@@ -41,7 +41,7 @@ export class Paint {
         });
     }
 
-    configCanvas() {
+    configureCanvas() {
         let canvas = document.createElement('canvas');
         canvas.width = 800;
         canvas.height = 400;
@@ -55,7 +55,39 @@ export class Paint {
         this.addEventsToCanvas(canvas);
     }
 
-    process(x, y, mouseupTriggered, isMoving?) {
+    configureColors() {
+        [
+            'white',
+            'black',
+            'red',
+            'blue',
+            'green',
+            'yellow',
+            'brown',
+            'purple'
+        ].forEach(color => {
+            document.getElementById(color).addEventListener('click', event => {
+                this.brush.color = event.srcElement.id;
+                this.isRandomColor = false;
+            });
+        });
+
+        document.getElementById('azar').addEventListener('click', () => {
+            this.isRandomColor = true;
+        });
+
+        document.getElementById('normal').addEventListener('click', event => {
+            this.brush.type = event.srcElement.id;
+        });
+    }
+
+    /**
+     * @param {any} x
+     * @param {any} y
+     * @param {any} mouseupTriggered
+     * @param {boolean} [isMoving]
+     */
+    process(x: any, y: any, mouseupTriggered: any, isMoving?: boolean) {
         if (this.isRandomColor) {
             this.randomColor();
         }
@@ -67,7 +99,12 @@ export class Paint {
         }
     }
 
-    storeShot(x: number, y: number, isMoving: boolean): any {
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {boolean} isMoving
+     */
+    storeShot(x: number, y: number, isMoving: boolean): void {
         storageStage.push([
             x,
             y,
@@ -78,6 +115,9 @@ export class Paint {
         ]);
     }
 
+    /**
+     * @param {HTMLCanvasElement} canvas
+     */
     addEventsToCanvas(canvas: HTMLCanvasElement) {
         let mouseupTriggered = true;
 
@@ -110,24 +150,19 @@ export class Paint {
         };
 
         document.getElementById('del').addEventListener('click', () => {
-            this.limpiar(canvas);
+            this.clear(canvas.width, canvas.height);
         });
     }
 
-    limpiar(canvas) {
+    /**
+     * @param {number} width
+     * @param {number} height
+     */
+    clear(width: number, height: number) {
         this.ctx.fillStyle = '#ffffff';
-        this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+        this.ctx.fillRect(0, 0, width, height);
 
         storageStage = [];
-    }
-
-    randomColor() {
-        const r = Math.round(Math.random() * 255);
-        const g = Math.round(Math.random() * 255);
-        const b = Math.round(Math.random() * 255);
-        const alpha = Math.round(Math.random() * 100) / 100;
-
-        this.brush.color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
     }
 
     draw() {
@@ -160,30 +195,13 @@ export class Paint {
         }
     }
 
-    configureColors() {
-        [
-            'white',
-            'black',
-            'red',
-            'blue',
-            'green',
-            'yellow',
-            'brown',
-            'purple'
-        ].forEach(color => {
-            document.getElementById(color).addEventListener('click', event => {
-                this.brush.color = event.srcElement.id;
-                this.isRandomColor = false;
-            });
-        });
+    randomColor() {
+        const r = Math.round(Math.random() * 255);
+        const g = Math.round(Math.random() * 255);
+        const b = Math.round(Math.random() * 255);
+        const alpha = Math.round(Math.random() * 100) / 100;
 
-        document.getElementById('azar').addEventListener('click', () => {
-            this.isRandomColor = true;
-        });
-
-        document.getElementById('normal').addEventListener('click', event => {
-            this.brush.type = event.srcElement.id;
-        });
+        this.brush.color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
     }
 }
 
