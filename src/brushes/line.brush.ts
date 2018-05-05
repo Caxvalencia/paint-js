@@ -1,12 +1,12 @@
-export enum LINE_TYPE {
-    bevel = 'bevel',
-    round = 'round',
-    miter = 'miter'
+export enum LineType {
+    BEVEL = 'bevel',
+    ROUND = 'round',
+    MITER = 'miter'
 }
 
 export class Line {
     context: CanvasRenderingContext2D;
-    style: LINE_TYPE;
+    style: LineType;
     protected x: number;
     protected y: number;
     protected x2: number;
@@ -20,7 +20,7 @@ export class Line {
      */
     constructor(
         context: CanvasRenderingContext2D,
-        style: LINE_TYPE = LINE_TYPE.round
+        style: LineType = LineType.ROUND
     ) {
         this.context = context;
         this.style = style;
