@@ -21,6 +21,7 @@ export class Paint {
     constructor() {
         this.configCanvas();
         this.sizeConfiguration();
+        this.configureColors();
 
         this.brush = new Brush(this.ctx);
     }
@@ -130,12 +131,12 @@ export class Paint {
     }
 
     draw() {
-        for (let i = 1; i <= storageStage.length; i++) {
+        for (let i = 1; i < storageStage.length; i++) {
             // brushType[i]
             let storagedBefore = storageStage[i - 1];
             let storaged = storageStage[i];
 
-            if (storaged[StorageIndex.isMoving]) {
+            if (storaged && storaged[StorageIndex.isMoving]) {
                 this.brush.line(
                     storagedBefore[StorageIndex.x],
                     storagedBefore[StorageIndex.y],
