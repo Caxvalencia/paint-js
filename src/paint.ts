@@ -17,7 +17,6 @@ let storageStage = [];
 
 export class Paint {
     brush: Brush;
-    ctx: CanvasRenderingContext2D;
     isRandomColor: boolean;
 
     constructor() {
@@ -29,8 +28,7 @@ export class Paint {
             parentElement: 'Pintar'
         });
 
-        this.ctx = canvasConfig.getContext();
-        this.brush = new Brush(this.ctx);
+        this.brush = new Brush(canvasConfig.getContext());
 
         SizeControlConfig.init(this.brush, { rage: 'tam', input: 'DatoTam' });
     }
