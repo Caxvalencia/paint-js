@@ -1,4 +1,5 @@
 import { Brush } from './brush';
+import { SizeControl } from './configurations/size-controls.config';
 
 declare let document: Document;
 
@@ -20,26 +21,13 @@ export class Paint {
 
     constructor() {
         this.configureCanvas();
-        this.configureSize();
+        SizeControl.init(this.brush, { rage: 'tam', input: 'DatoTam' });
         this.configureColors();
 
         this.brush = new Brush(this.ctx);
     }
 
-    configureSize() {
-        let sizeRange = <HTMLInputElement>document.getElementById('tam');
-        let sizeInput = <HTMLDataElement>document.getElementById('DatoTam');
-
-        sizeRange.addEventListener('change', (event: any) => {
-            this.brush.size = event.target.value;
-            sizeInput.value = sizeRange.value;
-        });
-
-        sizeInput.addEventListener('click', (event: any) => {
-            this.brush.size = event.target.value;
-            sizeRange.value = sizeInput.value;
-        });
-    }
+    configureSize() {}
 
     configureCanvas() {
         let canvas = document.createElement('canvas');
