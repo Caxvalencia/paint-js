@@ -23,11 +23,13 @@ export class Paint {
     constructor() {
         this.configureColors();
 
-        this.ctx = new CanvasConfig(this.ctx, this.process.bind(this), () => {
+        const canvasConfig = new CanvasConfig(this.process.bind(this), () => {
             storageStage = [];
         }).init({
             parentElement: 'Pintar'
         });
+
+        this.ctx = canvasConfig.getContext();
         this.brush = new Brush(this.ctx);
 
         SizeControlConfig.init(this.brush, { rage: 'tam', input: 'DatoTam' });

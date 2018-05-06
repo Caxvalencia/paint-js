@@ -4,20 +4,14 @@ export class CanvasConfig {
     onClear: Function;
 
     constructor(
-        context: CanvasRenderingContext2D,
         callback: Function,
         onClear?: Function
     ) {
-        this.context = context;
         this.callback = callback;
         this.onClear = onClear;
     }
 
-    init(config: {
-        parentElement: string;
-        width?: number;
-        height?: number;
-    }): CanvasRenderingContext2D {
+    init(config: { parentElement: string; width?: number; height?: number }) {
         let canvas = document.createElement('canvas');
         canvas.width = config.width || 800;
         canvas.height = config.height || 400;
@@ -25,9 +19,11 @@ export class CanvasConfig {
         canvas.style.cursor = 'pointer';
 
         document.getElementById(config.parentElement).appendChild(canvas);
-        this.addEvents(canvas);
 
-        return canvas.getContext('2d');
+        this.addEvents(canvas);
+        this.context = canvas.getContext('2d');
+
+        return this;
     }
 
     /**
@@ -78,5 +74,9 @@ export class CanvasConfig {
         this.context.fillRect(0, 0, width, height);
 
         this.onClear();
+    }
+
+    getContext(): CanvasRenderingContext2D {
+        return this.context;
     }
 }
