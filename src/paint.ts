@@ -1,5 +1,6 @@
 import { Brush } from './brush';
 import { SizeControlConfig } from './configurations/size-controls.config';
+import { CanvasConfig } from './configurations/canvas.config';
 
 declare let document: Document;
 
@@ -20,25 +21,16 @@ export class Paint {
     isRandomColor: boolean;
 
     constructor() {
-        this.configureCanvas();
-        SizeControlConfig.init(this.brush, { rage: 'tam', input: 'DatoTam' });
         this.configureColors();
 
+        this.ctx = new CanvasConfig(this.ctx, this.process.bind(this), () => {
+            storageStage = [];
+        }).init({
+            parentElement: 'Pintar'
+        });
         this.brush = new Brush(this.ctx);
-    }
 
-    configureCanvas() {
-        let canvas = document.createElement('canvas');
-        canvas.width = 800;
-        canvas.height = 400;
-        canvas.style.border = '1px black solid';
-        canvas.style.cursor = 'pointer';
-
-        document.getElementById('Pintar').appendChild(canvas);
-
-        this.ctx = canvas.getContext('2d');
-
-        this.addEventsToCanvas(canvas);
+        SizeControlConfig.init(this.brush, { rage: 'tam', input: 'DatoTam' });
     }
 
     configureColors() {
@@ -99,56 +91,6 @@ export class Paint {
             this.brush.type,
             this.brush.size
         ]);
-    }
-
-    /**
-     * @param {HTMLCanvasElement} canvas
-     */
-    addEventsToCanvas(canvas: HTMLCanvasElement) {
-        let mouseupTriggered = true;
-
-        let offset = {
-            left: canvas.offsetLeft,
-            top: canvas.offsetTop
-        };
-
-        canvas.onmousedown = event => {
-            const x = event.pageX - offset.left;
-            const y = event.pageY - offset.top;
-            mouseupTriggered = false;
-
-            this.process(x, y, mouseupTriggered);
-        };
-
-        canvas.onmousemove = event => {
-            if (mouseupTriggered) {
-                return;
-            }
-
-            const x = event.pageX - offset.left;
-            const y = event.pageY - offset.top;
-
-            this.process(x, y, mouseupTriggered, true);
-        };
-
-        canvas.onmouseup = function() {
-            mouseupTriggered = true;
-        };
-
-        document.getElementById('del').addEventListener('click', () => {
-            this.clear(canvas.width, canvas.height);
-        });
-    }
-
-    /**
-     * @param {number} width
-     * @param {number} height
-     */
-    clear(width: number, height: number) {
-        this.ctx.fillStyle = '#ffffff';
-        this.ctx.fillRect(0, 0, width, height);
-
-        storageStage = [];
     }
 
     draw() {
