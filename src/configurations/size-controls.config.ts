@@ -1,6 +1,6 @@
 import { Brush } from '../brush';
 
-export abstract class SizeControl {
+export abstract class SizeControlConfig {
     static init(brush: Brush, config: { rage: string; input: string }) {
         let sizeRange = <HTMLInputElement>document.getElementById(config.rage);
         let sizeInput = <HTMLDataElement>document.getElementById(config.input);

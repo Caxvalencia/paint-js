@@ -1,5 +1,5 @@
 import { Brush } from './brush';
-import { SizeControl } from './configurations/size-controls.config';
+import { SizeControlConfig } from './configurations/size-controls.config';
 
 declare let document: Document;
 
@@ -21,13 +21,11 @@ export class Paint {
 
     constructor() {
         this.configureCanvas();
-        SizeControl.init(this.brush, { rage: 'tam', input: 'DatoTam' });
+        SizeControlConfig.init(this.brush, { rage: 'tam', input: 'DatoTam' });
         this.configureColors();
 
         this.brush = new Brush(this.ctx);
     }
-
-    configureSize() {}
 
     configureCanvas() {
         let canvas = document.createElement('canvas');
