@@ -1,35 +1,60 @@
+declare type CanvasConfigType = {
+    elementSelector?: string;
+    width?: number;
+    height?: number;
+    onclear?: Function;
+    onmouse?: Function;
+};
+
 export class CanvasConfig {
     context: CanvasRenderingContext2D;
     callback: Function;
-    onClear: Function;
+    onclear: Function;
 
-    constructor(
-        callback: Function,
-        onClear?: Function
-    ) {
-        this.callback = callback;
-        this.onClear = onClear;
+    constructor(config: CanvasConfigType) {
+        let canvas: HTMLCanvasElement = document.querySelector(
+            config.elementSelector
+        );
+
+        this.buildCanvas(canvas, config);
+        this.onclear = config.onclear;
+        this.callback = config.onmouse;
+        this.context = canvas.getContext('2d');
     }
 
-    init(config: { parentElement: string; width?: number; height?: number }) {
-        let canvas = document.createElement('canvas');
+    static init(config: CanvasConfigType = {}) {
+        return new CanvasConfig(config);
+    }
+
+    /**
+     * @param {number} width
+     * @param {number} height
+     */
+    clear(width: number, height: number) {
+        this.context.fillStyle = '#ffffff';
+        this.context.fillRect(0, 0, width, height);
+
+        this.onclear();
+    }
+
+    /**
+     * @private
+     * @param {HTMLCanvasElement} canvas
+     * @param {any} config
+     */
+    private buildCanvas(canvas: HTMLCanvasElement, config: any) {
         canvas.width = config.width || 800;
         canvas.height = config.height || 400;
         canvas.style.border = '1px black solid';
         canvas.style.cursor = 'pointer';
 
-        document.getElementById(config.parentElement).appendChild(canvas);
-
         this.addEvents(canvas);
-        this.context = canvas.getContext('2d');
-
-        return this;
     }
 
     /**
      * @param {HTMLCanvasElement} canvas
      */
-    addEvents(canvas: HTMLCanvasElement) {
+    private addEvents(canvas: HTMLCanvasElement) {
         let mouseupTriggered = true;
 
         let offset = {
@@ -38,8 +63,7 @@ export class CanvasConfig {
         };
 
         canvas.onmousedown = event => {
-            const x = event.pageX - offset.left;
-            const y = event.pageY - offset.top;
+            const { x, y } = this.position(event, offset);
             mouseupTriggered = false;
 
             this.callback(x, y, mouseupTriggered);
@@ -50,8 +74,7 @@ export class CanvasConfig {
                 return;
             }
 
-            const x = event.pageX - offset.left;
-            const y = event.pageY - offset.top;
+            const { x, y } = this.position(event, offset);
 
             this.callback(x, y, mouseupTriggered, true);
         };
@@ -66,14 +89,21 @@ export class CanvasConfig {
     }
 
     /**
-     * @param {number} width
-     * @param {number} height
+     * @private
+     * @param {MouseEvent} event
+     * @param {{ left: number; top: number }} offset
+     * @returns {{ x: number; y: number }}
      */
-    clear(width: number, height: number) {
-        this.context.fillStyle = '#ffffff';
-        this.context.fillRect(0, 0, width, height);
+    private position(
+        event: MouseEvent,
+        offset: { left: number; top: number }
+    ): { x: number; y: number } {
+        const position = {
+            x: event.pageX - offset.left,
+            y: event.pageY - offset.top
+        };
 
-        this.onClear();
+        return position;
     }
 
     getContext(): CanvasRenderingContext2D {

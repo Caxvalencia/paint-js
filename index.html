@@ -1,45 +1,47 @@
 <!DOCTYPE html>
 
 <html lang=es>
-	<head>
-		<style>
-			.colors > input {
-				width: 20px;
-				height: 20px;
-				border: none;
-				margin: 3px;
-			}
-		</style>
-	</head>
 
-	<body>
-		<div id="Pintar"></div>
+<head>
+	<style>
+		.colors>input {
+			width: 20px;
+			height: 20px;
+			border: none;
+			margin: 3px;
+		}
+	</style>
+</head>
 
-		<div id="panel" style='border:1px black solid; width:300px;'>
-			<div id="colores" title='Colores' class="colors">
-				<input type='button' title='Blanco' id='white' style='border: 1px solid; background:white;' />
-				<input type='button' title='Negro' id='black' style='background:black;' />
-				<input type='button' title='Rojo' id='red' style='background:red;' />
-				<input type='button' title='Azul' id="blue" style='background:blue;' />
-				<input type='button' title='Verde' id="green" style='background:green;' />
-				<input type='button' title='Yellow' id="yellow" style='background:yellow;' />
-				<input type='button' title='Cafe' id="brown" style='background:brown;' />
-				<input type='button' title='Morado' id="purple" style='background:purple;' />
-				<input type='button' title='Colores Aleatorios' id="azar" style='background: linear-gradient(to right, rgba(30, 75, 115, 1), rgba(241, 210, 32, 0.555));
+<body>
+	<canvas id="paint-stage"></canvas>
+
+	<div id="panel" style='border:1px black solid; width:300px;'>
+		<div id="colores" title='Colores' class="colors">
+			<input type='button' title='Blanco' id='white' style='border: 1px solid; background:white;' />
+			<input type='button' title='Negro' id='black' style='background:black;' />
+			<input type='button' title='Rojo' id='red' style='background:red;' />
+			<input type='button' title='Azul' id="blue" style='background:blue;' />
+			<input type='button' title='Verde' id="green" style='background:green;' />
+			<input type='button' title='Yellow' id="yellow" style='background:yellow;' />
+			<input type='button' title='Cafe' id="brown" style='background:brown;' />
+			<input type='button' title='Morado' id="purple" style='background:purple;' />
+			<input type='button' title='Colores Aleatorios' id="azar" style='background: linear-gradient(to right, rgba(30, 75, 115, 1), rgba(241, 210, 32, 0.555));
 		' />
-			</div>
-
-			<div id="Brochas" title='Brochas' style='border:1px black solid;'>
-				<canvas title='Normal' id="normal" width=30 height=30></canvas>
-			</div>
-			
-			<div id="Herramientas" title='Herramientas' style='border:1px black solid;'>
-				<input type='button' title='Borrar' value='Borrar' id="del" />
-				<input type='range' title='Size' value=10 id="tam" name="tam" min=1 max=100 step=1 />
-				<input type='number' title='Size' value=10 id="DatoTam" name="DatoTam" min=1 max=100 size=1 />
-			</div>
 		</div>
 
-		<script src='dist/bundle.js'></script>
-	</body>
+		<div id="Brochas" title='Brochas' style='border:1px black solid;'>
+			<canvas title='Normal' id="normal" width=30 height=30></canvas>
+		</div>
+
+		<div id="Herramientas" title='Herramientas' style='border:1px black solid;'>
+			<input type='button' title='Borrar' value='Borrar' id="del" />
+			<input type='range' title='Size' value=10 id="tam" name="tam" min=1 max=100 step=1 />
+			<input type='number' title='Size' value=10 id="DatoTam" name="DatoTam" min=1 max=100 size=1 />
+		</div>
+	</div>
+
+	<script src='dist/bundle.js'></script>
+</body>
+
 </html>

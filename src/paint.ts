@@ -18,10 +18,10 @@ export class Paint {
     brush: Brush;
 
     constructor() {
-        const canvasConfig = new CanvasConfig(this.process.bind(this), () => {
-            storageStage = [];
-        }).init({
-            parentElement: 'Pintar'
+        const canvasConfig = CanvasConfig.init({
+            elementSelector: '#paint-stage',
+            onclear: () => (storageStage = []),
+            onmouse: this.process.bind(this)
         });
 
         this.brush = new Brush(canvasConfig.getContext());
@@ -31,12 +31,17 @@ export class Paint {
     }
 
     /**
-     * @param {any} x
-     * @param {any} y
-     * @param {any} mouseupTriggered
+     * @param {number} x
+     * @param {number} y
+     * @param {boolean} mouseupTriggered
      * @param {boolean} [isMoving]
      */
-    process(x: any, y: any, mouseupTriggered: any, isMoving?: boolean) {
+    process(
+        x: number,
+        y: number,
+        mouseupTriggered: boolean,
+        isMoving?: boolean
+    ) {
         if (ColorConfig.isRandomColor) {
             this.brush.color = ColorConfig.randomColor();
         }
