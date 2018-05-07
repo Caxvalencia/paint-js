@@ -1,8 +1,7 @@
 import { Brush } from './brush';
 import { SizeControlConfig } from './configurations/size-controls.config';
 import { CanvasConfig } from './configurations/canvas.config';
-
-declare let document: Document;
+import { ColorConfig } from './configurations/color.config';
 
 enum StorageIndex {
     x,
@@ -17,11 +16,8 @@ let storageStage = [];
 
 export class Paint {
     brush: Brush;
-    isRandomColor: boolean;
 
     constructor() {
-        this.configureColors();
-
         const canvasConfig = new CanvasConfig(this.process.bind(this), () => {
             storageStage = [];
         }).init({
@@ -30,33 +26,8 @@ export class Paint {
 
         this.brush = new Brush(canvasConfig.getContext());
 
+        ColorConfig.init(this.brush);
         SizeControlConfig.init(this.brush, { rage: 'tam', input: 'DatoTam' });
-    }
-
-    configureColors() {
-        [
-            'white',
-            'black',
-            'red',
-            'blue',
-            'green',
-            'yellow',
-            'brown',
-            'purple'
-        ].forEach(color => {
-            document.getElementById(color).addEventListener('click', event => {
-                this.brush.color = event.srcElement.id;
-                this.isRandomColor = false;
-            });
-        });
-
-        document.getElementById('azar').addEventListener('click', () => {
-            this.isRandomColor = true;
-        });
-
-        document.getElementById('normal').addEventListener('click', event => {
-            this.brush.type = event.srcElement.id;
-        });
     }
 
     /**
@@ -66,8 +37,8 @@ export class Paint {
      * @param {boolean} [isMoving]
      */
     process(x: any, y: any, mouseupTriggered: any, isMoving?: boolean) {
-        if (this.isRandomColor) {
-            this.randomColor();
+        if (ColorConfig.isRandomColor) {
+            this.brush.color = ColorConfig.randomColor();
         }
 
         this.storeShot(x, y, isMoving);
@@ -121,15 +92,6 @@ export class Paint {
                 storaged[StorageIndex.size]
             );
         }
-    }
-
-    randomColor() {
-        const r = Math.round(Math.random() * 255);
-        const g = Math.round(Math.random() * 255);
-        const b = Math.round(Math.random() * 255);
-        const alpha = Math.round(Math.random() * 100) / 100;
-
-        this.brush.color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
     }
 }
 
