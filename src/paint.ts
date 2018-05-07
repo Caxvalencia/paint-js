@@ -1,26 +1,19 @@
 import { Brush } from './brush';
-import { SizeControlConfig } from './configurations/size-controls.config';
 import { CanvasConfig } from './configurations/canvas.config';
 import { ColorConfig } from './configurations/color.config';
-
-enum StorageIndex {
-    x,
-    y,
-    isMoving,
-    color,
-    type,
-    size
-}
-
-let storageStage = [];
+import { SizeControlConfig } from './configurations/size-controls.config';
+import { StorageStage } from './storage-stage';
 
 export class Paint {
+    storageStage: StorageStage;
     brush: Brush;
 
     constructor() {
+        this.storageStage = new StorageStage();
+
         const canvasConfig = CanvasConfig.init({
             elementSelector: '#paint-stage',
-            onclear: () => (storageStage = []),
+            onclear: this.storageStage.clear,
             onmouse: this.process.bind(this)
         });
 
@@ -59,7 +52,7 @@ export class Paint {
      * @param {boolean} isMoving
      */
     storeShot(x: number, y: number, isMoving: boolean): void {
-        storageStage.push([
+        this.storageStage.push([
             x,
             y,
             isMoving,
@@ -70,31 +63,31 @@ export class Paint {
     }
 
     draw() {
-        for (let i = 1; i < storageStage.length; i++) {
+        for (let i = 1; i < this.storageStage.size(); i++) {
             // brushType[i]
-            let storagedBefore = storageStage[i - 1];
-            let storaged = storageStage[i];
+            let storagedBefore = this.storageStage.get(i - 1);
+            let storaged = this.storageStage.get(i);
 
-            if (storaged && storaged[StorageIndex.isMoving]) {
+            if (storaged && storaged.isMoving) {
                 this.brush.line(
-                    storagedBefore[StorageIndex.x],
-                    storagedBefore[StorageIndex.y],
-                    storaged[StorageIndex.x],
-                    storaged[StorageIndex.y],
-                    storaged[StorageIndex.color],
-                    storaged[StorageIndex.size]
+                    storagedBefore.x,
+                    storagedBefore.y,
+                    storaged.x,
+                    storaged.y,
+                    storaged.color,
+                    storaged.size
                 );
 
                 continue;
             }
 
             this.brush.line(
-                storaged[StorageIndex.x] - 1,
-                storaged[StorageIndex.y],
-                storaged[StorageIndex.x],
-                storaged[StorageIndex.y],
-                storaged[StorageIndex.color],
-                storaged[StorageIndex.size]
+                storaged.x - 1,
+                storaged.y,
+                storaged.x,
+                storaged.y,
+                storaged.color,
+                storaged.size
             );
         }
     }
