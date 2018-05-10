@@ -7,19 +7,18 @@ declare type CanvasConfigType = {
 };
 
 export class CanvasConfig {
+    canvas: HTMLCanvasElement;
     context: CanvasRenderingContext2D;
     callback: Function;
     onclear: Function;
 
     constructor(config: CanvasConfigType) {
-        let canvas: HTMLCanvasElement = document.querySelector(
-            config.elementSelector
-        );
+        this.canvas = document.querySelector(config.elementSelector);
+        this.buildCanvas(this.canvas, config);
 
-        this.buildCanvas(canvas, config);
         this.onclear = config.onclear;
         this.callback = config.onmouse;
-        this.context = canvas.getContext('2d');
+        this.context = this.canvas.getContext('2d');
     }
 
     static init(config: CanvasConfigType = {}) {
@@ -82,10 +81,6 @@ export class CanvasConfig {
         canvas.onmouseup = function() {
             mouseupTriggered = true;
         };
-
-        document.getElementById('del').addEventListener('click', () => {
-            this.clear(canvas.width, canvas.height);
-        });
     }
 
     /**
