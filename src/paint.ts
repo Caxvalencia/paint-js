@@ -8,11 +8,11 @@ export class Paint {
     storageStage: StorageStage;
     brush: Brush;
 
-    constructor() {
+    constructor(config: any) {
         this.storageStage = new StorageStage();
 
         const canvasConfig = CanvasConfig.init({
-            elementSelector: '#paint-stage',
+            elementSelector: config.canvas,
             onclear: this.storageStage.clear,
             onmouse: this.process.bind(this)
         });
@@ -20,7 +20,22 @@ export class Paint {
         this.brush = new Brush(canvasConfig.getContext());
 
         ColorConfig.init(this.brush);
-        SizeControlConfig.init(this.brush, { rage: 'tam', input: 'DatoTam' });
+
+        SizeControlConfig.init(this.brush, {
+            rage: config.sizeRange,
+            input: config.sizeInput
+        });
+
+        this.configureClearEvent(config.buttonClear, canvasConfig);
+    }
+
+    configureClearEvent(clearSelector, canvasConfig) {
+        document.querySelector(clearSelector).addEventListener('click', () => {
+            canvasConfig.clear(
+                canvasConfig.canvas.width,
+                canvasConfig.canvas.height
+            );
+        });
     }
 
     /**
@@ -93,4 +108,9 @@ export class Paint {
     }
 }
 
-new Paint();
+new Paint({
+    canvas: '#paint-stage',
+    sizeRage: 'tam',
+    sizeInput: 'DatoTam',
+    buttonClear: '#del'
+});
