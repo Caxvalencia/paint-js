@@ -1,9 +1,9 @@
 import { Brush } from '../brush';
 
 export abstract class SizeControlConfig {
-    static init(brush: Brush, config: { rage: string; input: string }) {
-        let sizeRange = <HTMLInputElement>document.getElementById(config.rage);
-        let sizeInput = <HTMLDataElement>document.getElementById(config.input);
+    static init(brush: Brush, { range, input }) {
+        let sizeRange = <HTMLInputElement>document.querySelector(range);
+        let sizeInput = <HTMLDataElement>document.querySelector(input);
 
         sizeRange.addEventListener('change', (event: any) => {
             brush.size = event.target.value;

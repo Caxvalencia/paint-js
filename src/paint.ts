@@ -20,11 +20,7 @@ export class Paint {
         this.brush = new Brush(canvasConfig.getContext());
 
         ColorConfig.init(this.brush);
-
-        SizeControlConfig.init(this.brush, {
-            rage: config.sizeRange,
-            input: config.sizeInput
-        });
+        SizeControlConfig.init(this.brush, config.size);
 
         this.configureClearEvent(config.buttonClear, canvasConfig);
     }
@@ -110,7 +106,9 @@ export class Paint {
 
 new Paint({
     canvas: '#paint-stage',
-    sizeRage: 'tam',
-    sizeInput: 'DatoTam',
-    buttonClear: '#del'
+    buttonClear: '.clear',
+    size: {
+        range: '.size-range',
+        input: '.size-input'
+    }
 });
