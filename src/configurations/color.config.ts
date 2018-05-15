@@ -3,26 +3,26 @@ export class ColorConfig {
 
     constructor(brush) {
         [
-            'white',
-            'black',
-            'red',
-            'blue',
-            'green',
-            'yellow',
-            'brown',
-            'purple'
+            '.white',
+            '.black',
+            '.red',
+            '.blue',
+            '.green',
+            '.yellow',
+            '.brown',
+            '.purple'
         ].forEach(color => {
-            document.getElementById(color).addEventListener('click', event => {
+            document.querySelector(color).addEventListener('click', event => {
                 brush.color = event.srcElement.id;
                 ColorConfig.isRandomColor = false;
             });
         });
 
-        document.getElementById('azar').addEventListener('click', () => {
+        document.querySelector('.azar').addEventListener('click', () => {
             ColorConfig.isRandomColor = true;
         });
 
-        document.getElementById('normal').addEventListener('click', event => {
+        document.querySelector('.normal').addEventListener('click', event => {
             brush.type = event.srcElement.id;
         });
     }
