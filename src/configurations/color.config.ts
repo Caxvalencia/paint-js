@@ -13,7 +13,7 @@ export class ColorConfig {
             '.purple'
         ].forEach(color => {
             document.querySelector(color).addEventListener('click', event => {
-                brush.color = event.srcElement.id;
+                brush.color = event.srcElement.className;
                 ColorConfig.isRandomColor = false;
             });
         });
@@ -23,7 +23,7 @@ export class ColorConfig {
         });
 
         document.querySelector('.normal').addEventListener('click', event => {
-            brush.type = event.srcElement.id;
+            brush.type = event.srcElement.className;
         });
     }
 
